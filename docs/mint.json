@@ -1,0 +1,38 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "evalflow",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#4ADE80"
+  },
+  "navigation": [
+    {
+      "group": "Getting started",
+      "pages": ["quickstart"]
+    },
+    {
+      "group": "Core concepts",
+      "pages": ["concepts", "eval-methods", "prompt-registry"]
+    },
+    {
+      "group": "CLI reference",
+      "pages": ["cli-reference"]
+    },
+    {
+      "group": "CI/CD",
+      "pages": ["ci-github-actions", "ci-gitlab", "ci-circleci"]
+    },
+    {
+      "group": "Providers",
+      "pages": ["providers/openai", "providers/groq", "providers/anthropic", "providers/gemini", "providers/ollama"]
+    },
+    {
+      "group": "Examples",
+      "pages": ["examples"]
+    }
+  ]
+}

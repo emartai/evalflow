@@ -1,0 +1,26 @@
+# Set up GitLab CI
+
+Run the same `evalflow eval` command in GitLab CI that you run locally.
+
+## Workflow
+
+```yaml
+stages:
+  - eval
+
+evalflow:
+  stage: eval
+  image: python:3.11
+  script:
+    - pip install evalflow
+    - evalflow doctor --no-provider-check
+    - evalflow eval
+  variables:
+    OPENAI_API_KEY: $OPENAI_API_KEY
+```
+
+```text
+The pipeline fails automatically when evalflow exits 1 or 2.
+```
+
+Store provider keys in GitLab CI/CD variables. Never commit secrets to `.gitlab-ci.yml`.

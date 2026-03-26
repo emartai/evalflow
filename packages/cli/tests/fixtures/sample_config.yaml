@@ -1,0 +1,23 @@
+version: "1.0"
+project: fixture-project
+providers:
+  openai:
+    api_key_env: OPENAI_API_KEY
+    default_model: gpt-4o-mini
+eval:
+  dataset: evals/dataset.json
+  default_provider: openai
+  consistency_runs: 3
+thresholds:
+  task_success: 0.8
+  relevance: 0.75
+  hallucination_max: 0.1
+  consistency_min: 0.85
+judge:
+  provider: groq
+  model: llama-3.1-8b-instant
+prompts:
+  directory: prompts/
+storage:
+  store_raw_outputs: true
+  max_output_chars: 2000

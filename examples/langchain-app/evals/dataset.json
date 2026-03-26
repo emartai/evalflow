@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "test_cases": [
+    {
+      "id": "summarize-meeting-notes",
+      "description": "Summarize meeting notes in one sentence",
+      "task_type": "summarization",
+      "input": "Summarize in one sentence: The team shipped offline mode, fixed prompt diffs, and added SQLite baselines.",
+      "expected_output": "The team shipped offline mode, prompt diffs, and SQLite baselines.",
+      "context": "",
+      "tags": ["langchain", "summary"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    },
+    {
+      "id": "classify-user-intent",
+      "description": "Classify user intent from a short request",
+      "task_type": "classification",
+      "input": "Classify intent as billing or support: I need to update my invoice details.",
+      "expected_output": "billing",
+      "context": "",
+      "tags": ["langchain", "classification"],
+      "eval_config": {
+        "methods": ["exact_match"],
+        "judge": false,
+        "weight": 1.0
+      }
+    },
+    {
+      "id": "answer-faq-context",
+      "description": "Answer a FAQ question from provided context",
+      "task_type": "qa",
+      "input": "How do I rotate API keys?",
+      "expected_output": "Rotate API keys from the security settings page.",
+      "context": "Account settings: API keys can be rotated from the security settings page.",
+      "tags": ["langchain", "qa"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    }
+  ]
+}

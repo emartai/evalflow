@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "test_cases": [
+    {
+      "id": "summarize-pr-description",
+      "description": "Summarize a short pull request description",
+      "task_type": "summarization",
+      "input": "Summarize in one sentence: This PR adds cached responses, improves error output, and updates the CI docs.",
+      "expected_output": "The PR adds caching, improves errors, and updates CI docs.",
+      "context": "",
+      "tags": ["ci", "summary"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    },
+    {
+      "id": "classify-ci-failure",
+      "description": "Classify a CI incident as blocking",
+      "task_type": "classification",
+      "input": "Classify as blocking or non-blocking: The release workflow cannot upload artifacts.",
+      "expected_output": "blocking",
+      "context": "",
+      "tags": ["ci", "classification"],
+      "eval_config": {
+        "methods": ["exact_match"],
+        "judge": false,
+        "weight": 1.0
+      }
+    },
+    {
+      "id": "answer-readme-question",
+      "description": "Answer a repository question from context",
+      "task_type": "qa",
+      "input": "Which file publishes the package?",
+      "expected_output": "The publish workflow publishes the package from .github/workflows/publish.yml.",
+      "context": "Repository workflows: ci.yml runs tests. publish.yml builds and publishes releases.",
+      "tags": ["ci", "qa"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    }
+  ]
+}

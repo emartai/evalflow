@@ -1,0 +1,26 @@
+version: "1.0"
+project: groq-ci
+
+providers:
+  groq:
+    api_key_env: "GROQ_API_KEY"
+    default_model: "llama-3.1-8b-instant"
+
+eval:
+  dataset: "evals/dataset.json"
+  baseline_file: ".evalflow/baseline.json"
+  default_provider: "groq"
+  consistency_runs: 3
+
+thresholds:
+  task_success: 0.80
+  relevance: 0.75
+  hallucination_max: 0.10
+  consistency_min: 0.85
+
+judge:
+  provider: "groq"
+  model: "llama-3.1-8b-instant"
+
+prompts:
+  directory: "prompts/"

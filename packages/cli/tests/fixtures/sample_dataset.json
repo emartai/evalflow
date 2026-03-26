@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "test_cases": [
+    {
+      "id": "test-summarize",
+      "description": "Model should summarize a short passage.",
+      "task_type": "summarization",
+      "input": "Summarize: The cat sat on the mat.",
+      "expected_output": "A cat sat on a mat.",
+      "context": "",
+      "tags": ["smoke"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    }
+  ]
+}

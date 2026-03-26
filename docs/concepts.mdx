@@ -1,0 +1,43 @@
+# Core concepts
+
+These are the few terms that matter when you run evalflow in CI.
+
+## What is a quality gate?
+
+```text
+PASS: quality is at or above the configured threshold
+FAIL: quality dropped below the threshold
+ERROR: setup, config, or provider execution failed
+```
+
+A quality gate is the rule that decides whether a run should block a pull request. `evalflow eval` exits `0` on pass, `1` on quality failure, and `2` on setup or execution error.
+
+## What is a baseline?
+
+```text
+Baseline: saved
+Δ overall: +0.03
+```
+
+A baseline is the last accepted run for the same dataset. New runs are compared against it so evalflow catches regressions, not just low absolute scores.
+
+## What is a prompt regression?
+
+```text
+Summarization improved
+Classification dropped from 1.00 to 0.62
+CI failed before merge
+```
+
+A prompt regression is when a change helps one case but silently harms another. evalflow makes that visible before the change ships.
+
+## How the four eval methods work
+
+```text
+exact_match           labels, booleans, structured output
+embedding_similarity  summaries, semantic answers, rewrites
+consistency           repeated generations to detect flakiness
+llm_judge             groundedness and nuanced quality checks
+```
+
+Use `exact_match` when the answer must be exact after normalization. Use `embedding_similarity` when wording can vary but meaning should stay close. Use `consistency` when the same prompt should produce similar answers across repeated calls. Use `llm_judge` when you need a second model to score quality or grounding.

@@ -1,0 +1,45 @@
+# Use Gemini
+
+Use Gemini when you want Google's models with a free tier and generous rate limits for development.
+
+## Setup
+
+```yaml
+providers:
+  gemini:
+    api_key_env: "GEMINI_API_KEY"
+    default_model: "gemini-1.5-flash"
+
+eval:
+  default_provider: "gemini"
+```
+
+```bash
+export GEMINI_API_KEY="your-key-here"
+evalflow doctor
+evalflow eval --provider gemini
+```
+
+```text
+✓ GEMINI_API_KEY set
+Running test cases against gemini-1.5-flash...
+Quality Gate: PASS
+```
+
+Get a key at [aistudio.google.com](https://aistudio.google.com). The free tier is sufficient for routine CI eval runs.
+
+## Available models
+
+```text
+gemini-1.5-flash     — fast, low cost, good for CI
+gemini-1.5-pro       — higher quality, slower
+gemini-2.0-flash     — latest generation
+```
+
+## Best for
+
+```text
+teams already using Google Cloud
+high-volume eval runs on the free tier
+experimenting with Google's latest models
+```

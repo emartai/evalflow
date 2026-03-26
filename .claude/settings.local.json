@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la /c/Users/DELL/Projects/evalflow/*.md)",
+      "Bash(ls -1 /c/Users/DELL/Projects/evalflow/packages/cli/tests/test_*.py)",
+      "Bash(ls -1 /c/Users/DELL/Projects/evalflow/docs/*.mdx)",
+      "Bash(.venv/Scripts/python -m build packages/cli --outdir dist/)",
+      "Bash(EVALFLOW_SMOKE_SKIP_INSTALL=1 .venv/Scripts/python scripts/smoke_test.py)"
+    ]
+  }
+}

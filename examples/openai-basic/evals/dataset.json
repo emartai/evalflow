@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "test_cases": [
+    {
+      "id": "summarize-release-notes",
+      "description": "Summarize short product notes in one sentence",
+      "task_type": "summarization",
+      "input": "Summarize in one sentence: Evalflow now stores baselines locally and prints run IDs in the summary.",
+      "expected_output": "Evalflow stores baselines locally and shows run IDs in summaries.",
+      "context": "",
+      "tags": ["smoke", "summary"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    },
+    {
+      "id": "classify-support-priority",
+      "description": "Classify a support issue as urgent",
+      "task_type": "classification",
+      "input": "Classify as urgent or normal: Customer cannot access production after migration.",
+      "expected_output": "urgent",
+      "context": "",
+      "tags": ["smoke", "classification"],
+      "eval_config": {
+        "methods": ["exact_match"],
+        "judge": false,
+        "weight": 1.0
+      }
+    },
+    {
+      "id": "answer-billing-question",
+      "description": "Answer a simple billing question with provided context",
+      "task_type": "qa",
+      "input": "What plan includes audit logs?",
+      "expected_output": "The business plan includes audit logs.",
+      "context": "Pricing: Starter has email support. Business includes audit logs and SSO.",
+      "tags": ["smoke", "qa"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    }
+  ]
+}

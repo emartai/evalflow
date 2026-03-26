@@ -1,0 +1,14 @@
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "evalflow-core"
+version = "0.1.0"
+description = "Shared evalflow types for CLI and future API integrations."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["evalflow_core"]

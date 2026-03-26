@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>evalflow Docs</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f8f4;
+        --panel: #ffffff;
+        --text: #142013;
+        --muted: #5b6b59;
+        --accent: #1f7a4c;
+        --border: #d7e2d4;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background: radial-gradient(circle at top, #eef7ea 0%, var(--bg) 55%);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 840px;
+        margin: 0 auto;
+        padding: 64px 24px 80px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 18px 60px rgba(18, 32, 19, 0.08);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 2.5rem;
+        line-height: 1.05;
+      }
+
+      p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      ul {
+        margin: 24px 0;
+        padding-left: 18px;
+      }
+
+      li {
+        margin: 10px 0;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .note {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="panel">
+        <p class="muted">evalflow documentation</p>
+        <h1>Docs are on GitHub for now.</h1>
+        <p>
+          This GitHub Pages URL is the stable public docs entrypoint for the first release.
+          Until a custom domain is added, the source-of-truth docs live in the repository.
+        </p>
+        <ul>
+          <li><a href="https://github.com/emartai/evalflow/blob/main/docs/quickstart.mdx">Quickstart</a></li>
+          <li><a href="https://github.com/emartai/evalflow/blob/main/docs/concepts.mdx">Concepts</a></li>
+          <li><a href="https://github.com/emartai/evalflow/blob/main/docs/cli-reference.mdx">CLI reference</a></li>
+          <li><a href="https://github.com/emartai/evalflow/blob/main/docs/ci-github-actions.mdx">GitHub Actions guide</a></li>
+          <li><a href="https://github.com/emartai/evalflow/tree/main/docs/providers">Provider docs</a></li>
+          <li><a href="https://github.com/emartai/evalflow/tree/main/docs">Full docs source</a></li>
+        </ul>
+        <p class="note">
+          When you move to a custom domain later, update
+          <code>packages/cli/evalflow/urls.py</code>,
+          <code>packages/cli/pyproject.toml</code>, and
+          <code>README.md</code> together.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

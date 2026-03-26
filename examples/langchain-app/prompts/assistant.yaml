@@ -1,0 +1,9 @@
+id: assistant
+version: 1
+status: production
+body: |
+  You are a LangChain assistant prompt.
+  Be concise, grounded, and prefer direct answers over filler.
+author: evalflow
+created_at: "2024-03-01"
+tags: ["example", "langchain"]

@@ -1,0 +1,35 @@
+# Version prompts like code
+
+Store prompts as YAML files and promote them through `draft`, `staging`, and `production`.
+
+## Prompt file
+
+```yaml
+id: summarization
+version: 2
+status: production
+body: |
+  You are a summarization assistant.
+  Summarize the user input in one sentence.
+author: emmanuel
+created_at: "2026-03-25T12:00:00Z"
+tags: ["core", "summary"]
+```
+
+Each prompt file has an ID, version, status, body, and metadata that make prompt changes reviewable in git.
+
+## CLI workflow
+
+```bash
+evalflow prompt create summarization
+evalflow prompt list
+evalflow prompt diff summarization 1 2
+evalflow prompt promote summarization --to production
+```
+
+```text
+✓ Created prompts/summarization.yaml
+✓ summarization promoted to production
+```
+
+Use the registry to keep prompt edits visible, diffable, and promotable with the same workflow you already use for code.

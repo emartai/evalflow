@@ -1,0 +1,37 @@
+# Use Groq
+
+Use Groq when you want fast CI checks, a free tier, and no credit card requirement to get started.
+
+## Complete setup in 60 seconds
+
+```yaml
+providers:
+  groq:
+    api_key_env: "GROQ_API_KEY"
+    default_model: "llama-3.1-8b-instant"
+
+eval:
+  default_provider: "groq"
+```
+
+```bash
+export GROQ_API_KEY="your-key-here"
+evalflow doctor
+evalflow eval --provider groq
+```
+
+```text
+✓ GROQ_API_KEY set
+Running test cases against llama-3.1-8b-instant...
+Quality Gate: PASS
+```
+
+Groq is a strong fit for CI/CD and teams on a budget because the free tier can cover routine regression checks without slowing builds down.
+
+## Best for
+
+```text
+CI/CD
+teams on a budget
+default judge-model usage
+```

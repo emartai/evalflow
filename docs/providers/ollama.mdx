@@ -1,0 +1,25 @@
+# Use Ollama
+
+Use Ollama when you want local evals without a hosted API.
+
+## Setup
+
+```yaml
+providers:
+  ollama:
+    api_key_env: "OLLAMA_API_KEY"
+    default_model: "llama3.2"
+```
+
+```bash
+ollama serve
+evalflow doctor --check-providers
+evalflow eval --provider ollama
+```
+
+```text
+✓ ollama health check
+Running test cases against llama3.2...
+```
+
+Ollama is useful for local development, demos, and teams that want to avoid external model calls during iteration.

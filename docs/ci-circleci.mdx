@@ -1,0 +1,31 @@
+# Set up CircleCI
+
+Run evalflow in a dedicated job that blocks merges when quality regresses.
+
+## Workflow
+
+```yaml
+version: 2.1
+
+jobs:
+  evalflow:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - checkout
+      - run: pip install evalflow
+      - run: evalflow doctor --no-provider-check
+      - run: evalflow eval
+
+workflows:
+  version: 2
+  quality-gate:
+    jobs:
+      - evalflow
+```
+
+```text
+CircleCI marks the workflow failed when evalflow returns a non-zero exit code.
+```
+
+Store API keys in CircleCI project environment variables, not in the config file.

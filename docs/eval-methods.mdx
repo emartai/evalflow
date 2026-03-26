@@ -1,0 +1,39 @@
+# Choose an eval method
+
+Pick the method that matches the output you want to protect.
+
+## `exact_match`
+
+```text
+Best for: labels, booleans, short structured output
+Cost: zero
+```
+
+Use `exact_match` when the answer should match after normalization.
+
+## `embedding_similarity`
+
+```text
+Best for: summaries, semantic answers, rewrites
+Cost: zero after local model download
+```
+
+Use `embedding_similarity` when wording can vary but meaning should stay close.
+
+## `consistency`
+
+```text
+Best for: unstable generations
+Cost: multiple provider calls
+```
+
+Use `consistency` when you want to detect flaky behavior from the same prompt.
+
+## `llm_judge`
+
+```text
+Best for: groundedness, nuanced quality checks
+Cost: one extra judge-model call
+```
+
+Use `llm_judge` when string matching is too weak and you need a second model to score quality.

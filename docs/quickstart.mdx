@@ -1,0 +1,124 @@
+# Get started in 10 minutes
+
+Install evalflow, create a dataset, run the quality gate once, and wire it into CI.
+
+## Install
+
+```bash
+pip install evalflow
+```
+
+```text
+Successfully installed evalflow
+evalflow --version
+> evalflow v0.1.0
+```
+
+## Initialize
+
+Interactive setup:
+
+```bash
+evalflow init
+```
+
+```text
+Choose provider [openai, anthropic, groq, gemini, ollama]: openai
+Choose model [gpt-4o-mini]:
+API key env var name [OPENAI_API_KEY]:
+  evalflow initialized
+```
+
+`evalflow init` creates `evalflow.yaml`, `prompts/`, `evals/dataset.json`, `.env.example`, and `.evalflow/`.
+
+Non-interactive setup for CI, Docker, or scripts:
+
+```bash
+evalflow init --provider groq --model llama-3.1-8b-instant --non-interactive
+```
+
+List supported providers and their default models:
+
+```bash
+evalflow init --list-providers
+```
+
+## Write your first test
+
+```json
+{
+  "version": "1.0",
+  "test_cases": [
+    {
+      "id": "example-summarization",
+      "description": "Basic summarization test",
+      "task_type": "summarization",
+      "input": "Summarize in one sentence: The quick brown fox jumps over the lazy dog.",
+      "expected_output": "A fox jumps over a dog.",
+      "context": "",
+      "tags": ["example"],
+      "eval_config": {
+        "methods": ["embedding_similarity"],
+        "judge": false,
+        "weight": 1.0
+      }
+    }
+  ]
+}
+```
+
+```text
+Saved to evals/dataset.json
+```
+
+## Run eval
+
+```bash
+export OPENAI_API_KEY="your-key-here"
+evalflow eval
+```
+
+```text
+Running 1 test cases against gpt-4o-mini...
+
+✓ example-summarization    0.91
+
+Quality Gate: PASS
+Baseline: saved
+Failures: 0
+Duration: 2.8s
+Run ID: 20260325-a3f9c2d81b4e
+```
+
+## Add to CI
+
+```yaml
+# .github/workflows/evalflow.yml
+name: LLM Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - "prompts/**"
+      - "evals/**"
+      - "**.py"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install evalflow
+      - run: evalflow eval
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+```
+
+```text
+Pull requests now fail automatically when prompt quality regresses.
+```
+
+You just set up a quality gate for your LLM. Every PR that touches prompts will now be tested automatically.

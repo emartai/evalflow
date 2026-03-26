@@ -1,0 +1,25 @@
+# Use Anthropic
+
+Use Anthropic when your production stack already depends on Claude models.
+
+## Setup
+
+```yaml
+providers:
+  anthropic:
+    api_key_env: "ANTHROPIC_API_KEY"
+    default_model: "claude-3-5-haiku-20241022"
+```
+
+```bash
+export ANTHROPIC_API_KEY="your-key-here"
+evalflow doctor
+evalflow eval --provider anthropic
+```
+
+```text
+✓ ANTHROPIC_API_KEY set
+Running test cases against claude-3-5-haiku-20241022...
+```
+
+Anthropic is a good fit when your shipped prompts already target Claude and you want evals to match production behavior closely.

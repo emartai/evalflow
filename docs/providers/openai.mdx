@@ -1,0 +1,25 @@
+# Use OpenAI
+
+Use OpenAI when you want the default evalflow setup and broad model coverage.
+
+## Setup
+
+```yaml
+providers:
+  openai:
+    api_key_env: "OPENAI_API_KEY"
+    default_model: "gpt-4o-mini"
+```
+
+```bash
+export OPENAI_API_KEY="your-key-here"
+evalflow doctor
+evalflow eval --provider openai
+```
+
+```text
+✓ OPENAI_API_KEY set
+Running test cases against gpt-4o-mini...
+```
+
+OpenAI is the simplest starting point if your app already uses OpenAI in production.

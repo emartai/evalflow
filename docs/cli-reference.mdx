@@ -1,0 +1,150 @@
+# CLI reference
+
+This is the command surface for the current evalflow CLI.
+
+## `evalflow init`
+
+```bash
+evalflow init
+```
+
+```text
+Creates evalflow.yaml, prompts/, evals/dataset.json, .env.example, and .evalflow/
+```
+
+Interactive setup for a new project.
+
+Flags:
+- none
+
+## `evalflow eval`
+
+```bash
+evalflow eval --provider openai --model gpt-4o-mini --dataset evals/dataset.json --tag critical --save-baseline
+```
+
+```text
+Running 5 test cases against gpt-4o-mini...
+✓ summarize-short-article    0.91
+✗ answer-with-context        0.61
+Quality Gate: FAIL
+Failures: 1
+```
+
+Run the LLM quality gate against the configured dataset.
+
+Flags:
+- `--provider`, `-p`: provider override
+- `--model`, `-m`: model override
+- `--dataset`, `-d`: dataset path override
+- `--tag`, `-t`: run only tagged test cases
+- `--offline`: use cached responses only
+- `--debug`: show exception details on unexpected errors
+- `--save-baseline`: save the current run as the baseline
+
+## `evalflow doctor`
+
+```bash
+evalflow doctor --check-providers
+```
+
+```text
+✓ evalflow 0.1.0 installed
+✓ evalflow.yaml found
+✗ OPENAI_API_KEY not set
+```
+
+Check local setup, config, storage, environment variables, and optional live provider health.
+
+Flags:
+- `--fix`: apply supported fixes such as `.gitignore` entries
+- `--check-providers` / `--no-provider-check`: enable or skip live provider checks
+
+## `evalflow runs`
+
+```bash
+evalflow runs --limit 20 --since 7d --failed-only
+```
+
+```text
+Run ID                 Date         Provider  Model                 Score  Status
+20260325-a3f9c2d81b4e  2026-03-25   openai    gpt-4o-mini          0.89   pass
+```
+
+List recent runs from local SQLite history.
+
+Flags:
+- `--limit`, `-n`: maximum number of runs to show
+- `--since`: look back using values like `7d` or `1h`
+- `--failed-only`: show only failed runs
+
+## `evalflow compare`
+
+```bash
+evalflow compare 20260325-a3f9 20260324-b4c2
+```
+
+```text
+Overall score: +0.04
+example-summarization  improved
+answer-with-context    regressed
+```
+
+Compare two run IDs side by side. Partial IDs are accepted when they resolve uniquely.
+
+Arguments:
+- `run-a`: first run ID
+- `run-b`: second run ID
+
+## `evalflow prompt create`
+
+```bash
+evalflow prompt create summarization
+```
+
+```text
+✓ Created prompts/summarization.yaml
+```
+
+Create a prompt YAML file in `prompts/`.
+
+## `evalflow prompt list`
+
+```bash
+evalflow prompt list
+```
+
+```text
+ID             Version  Status      Author   Created
+summarization  1        draft       unknown  2026-03-25
+```
+
+List stored prompts and their current status.
+
+## `evalflow prompt diff`
+
+```bash
+evalflow prompt diff summarization 1 2
+```
+
+```text
+- You are a helpful assistant.
++ You are a concise summarization assistant.
+```
+
+Show the diff between two stored prompt versions.
+
+## `evalflow prompt promote`
+
+```bash
+evalflow prompt promote summarization --to production
+```
+
+```text
+✓ summarization promoted to production
+```
+
+Promote a prompt to `staging` or `production`.
+
+Flags:
+- `--to`: target status, `staging` or `production`

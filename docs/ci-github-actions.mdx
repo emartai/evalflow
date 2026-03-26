@@ -1,0 +1,79 @@
+# Set up GitHub Actions
+
+Use evalflow in pull requests so prompt regressions fail CI before they ship.
+
+## 1. Install evalflow in your repo
+
+```bash
+pip install evalflow
+evalflow init
+```
+
+```text
+evalflow.yaml created
+evals/dataset.json created
+```
+
+## 2. Add the workflow file
+
+```yaml
+# .github/workflows/evalflow.yml
+name: LLM Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - "prompts/**"
+      - "evals/**"
+      - "**.py"
+      - "evalflow.yaml"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install evalflow
+      - run: evalflow doctor --no-provider-check
+      - run: evalflow eval
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+```
+
+```text
+Every pull request now runs the evalflow quality gate.
+```
+
+## 3. Add repository secrets
+
+```text
+GitHub -> Settings -> Secrets and variables -> Actions -> New repository secret
+
+Name: OPENAI_API_KEY
+Value: your real provider key
+```
+
+If you use another provider, set the matching variable name from `evalflow.yaml`, such as `GROQ_API_KEY` or `ANTHROPIC_API_KEY`.
+
+## 4. Block merges on regressions
+
+```text
+evalflow exits 0 on pass
+evalflow exits 1 on quality failure
+evalflow exits 2 on setup or provider error
+```
+
+GitHub treats non-zero exit codes as workflow failures, so regressions block the pull request automatically.
+
+## Security note
+
+```text
+Never hardcode API keys in workflow YAML.
+Use GitHub Secrets or organization secrets.
+Keep .env out of git.
+```
+
+Use `evalflow doctor` locally before pushing so CI failures are about model quality, not missing setup.
