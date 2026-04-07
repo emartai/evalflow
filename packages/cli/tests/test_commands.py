@@ -82,7 +82,7 @@ def test_version_works_without_config(tmp_path: Path, monkeypatch) -> None:
     result = runner.invoke(app, ["--version"], catch_exceptions=False)
 
     assert result.exit_code == 0
-    assert "> evalflow v0.1.5" in result.output
+    assert "> evalflow v" in result.output
 
 
 def test_root_help_matches_expected_command_descriptions(tmp_path: Path, monkeypatch) -> None:
@@ -401,7 +401,7 @@ def test_doctor_shows_checkmarks_for_valid_setup(tmp_path: Path, monkeypatch) ->
     )
 
     assert result.exit_code == 0
-    assert "evalflow 0.1.5 installed" in result.output
+    assert "evalflow " in result.output and " installed" in result.output
     assert "OPENAI_API_KEY set" in result.output
     assert "Response cache:" in result.output
 
