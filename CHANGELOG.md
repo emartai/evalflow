@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2026-04-07
+
+### Changed
+
+- updated all docs URLs to point to emartai.mintlify.app
+- GitHub Pages entry point now redirects to Mintlify
+
 ## [0.1.3] - 2026-04-07
 
 ### Fixed
