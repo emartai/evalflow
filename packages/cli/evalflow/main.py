@@ -213,12 +213,15 @@ def dataset_lint_command(
 
 
 @prompt_app.command("create")
-def prompt_create(name: str = typer.Argument(..., help="Prompt name in lowercase kebab-case")) -> None:
+def prompt_create(
+    name: str = typer.Argument(..., help="Prompt name in lowercase kebab-case"),
+    author: str = typer.Option("unknown", "--author", help="Author name to record in the prompt file"),
+) -> None:
     """Create a new prompt YAML file."""
 
     from evalflow.commands.prompt import prompt_create as impl
 
-    impl(name=name)
+    impl(name=name, author=author)
 
 
 @prompt_app.command("list")

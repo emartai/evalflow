@@ -215,7 +215,7 @@ class EvalflowDB:
     async def list_runs(
         self,
         limit: int = 20,
-        since_days: int | None = None,
+        since_days: float | None = None,
         failed_only: bool = False,
     ) -> list[dict[str, Any]]:
         """List recent runs with optional filtering."""

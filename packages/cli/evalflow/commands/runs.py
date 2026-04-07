@@ -72,7 +72,7 @@ async def _list_runs(
 ) -> list[dict]:
     """Load filtered run history from SQLite."""
 
-    since_days = _parse_since(since) if since else None
+    since_days: float | None = _parse_since(since) if since else None
     async with EvalflowDB() as db:
         return await db.list_runs(limit=limit, since_days=since_days, failed_only=failed_only)
 
@@ -128,8 +128,8 @@ async def _find_matching_runs(db: EvalflowDB, prefix: str) -> list[dict]:
     return [run for run in runs if str(run["id"]).startswith(prefix)]
 
 
-def _parse_since(value: str) -> int:
-    """Convert a value like ``7d`` or ``24h`` into whole-day filtering."""
+def _parse_since(value: str) -> float:
+    """Convert a value like ``7d`` or ``24h`` into fractional days for filtering."""
 
     match = re.fullmatch(r"(\d+)([dh])", value.strip().lower())
     if match is None:
@@ -138,7 +138,7 @@ def _parse_since(value: str) -> int:
     amount = int(match.group(1))
     unit = match.group(2)
     if unit == "d":
-        return amount
+        return float(amount)
     if unit == "h":
-        return max(1, amount // 24) if amount >= 24 else 1
+        return amount / 24.0
     raise ValueError("Use formats like 7d or 1h")

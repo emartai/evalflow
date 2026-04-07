@@ -202,6 +202,7 @@ class EvalOrchestrator:
                 actual_output=actual_output,
                 provider=provider,
                 provider_config=provider_config,
+                offline=offline,
             )
             score = self._compute_test_case_score(scores)
             status = (
@@ -235,6 +236,7 @@ class EvalOrchestrator:
         actual_output: str,
         provider: BaseProvider,
         provider_config: ProviderConfig,
+        offline: bool = False,
     ) -> dict[str, float]:
         scores: dict[str, float] = {}
         methods = test_case.eval_config.methods
@@ -257,7 +259,7 @@ class EvalOrchestrator:
                 runs=self.config.eval.consistency_runs,
             )
 
-        if test_case.eval_config.judge or EvalMethod.llm_judge in methods:
+        if (test_case.eval_config.judge or EvalMethod.llm_judge in methods) and not offline:
             judge_provider_name = self.config.judge.provider
             judge_provider_class = get_provider(judge_provider_name)
             judge_provider = judge_provider_class()

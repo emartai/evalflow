@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.6] - 2026-04-07
+
+### Fixed
+
+- `prompt create` now accepts an `--author` flag instead of silently hardcoding `"unknown"` for every prompt
+- `evalflow eval --offline` no longer errors on test cases configured with an LLM judge — the judge is skipped gracefully when running without API access
+- `evalflow runs --since 12h` now correctly filters to the last 12 hours instead of rounding up to 1 full day; all sub-24h values now work as expected
+- Fixed invalid escape sequence deprecation warning in `doctor.py` (`\[` → raw string)
+
 ## [0.1.5] - 2026-04-07
 
 ### Fixed

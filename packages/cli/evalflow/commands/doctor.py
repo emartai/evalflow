@@ -149,7 +149,7 @@ def doctor_command(
         else:
             console.print("! sentence-transformers not installed (optional - needed for embedding_similarity)")
             if fix:
-                console.print('  ! Cannot auto-fix: run [bold]pip install "evalflow[embeddings]"[/bold]')
+                console.print(r'  ! Cannot auto-fix: run [bold]pip install "evalflow\[embeddings]"[/bold]')
 
         gitignore_ok = _gitignore_has_required_entries(gitignore_path)
         if not gitignore_ok and fix:
