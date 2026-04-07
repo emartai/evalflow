@@ -245,6 +245,7 @@ def create_eval_progress() -> Progress:
         TextColumn("{task.description}"),
         TimeElapsedColumn(),
         console=console,
+        transient=True,
     )
 
 

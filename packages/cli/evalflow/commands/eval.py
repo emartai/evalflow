@@ -146,8 +146,6 @@ async def _async_eval(
         if tags:
             selected_cases = [case for case in loaded_dataset.test_cases if tag in case.tags]
         print_eval_header(selected_provider, provider_settings.default_model, len(selected_cases))
-        pending_results: dict[int, TestCaseResult] = {}
-        next_output_index = 0
         active_cases: dict[int, str] = {}
 
         with create_eval_progress() as progress:
@@ -160,20 +158,6 @@ async def _async_eval(
                 if len(ordered) == 1:
                     return ordered[0]
                 return f"{ordered[0]} +{len(ordered) - 1} more"
-
-            def _flush_ready_results() -> None:
-                nonlocal next_output_index
-                while next_output_index in pending_results:
-                    result = pending_results.pop(next_output_index)
-                    if result.score is None and result.error:
-                        print_warning(result.error)
-                    else:
-                        print_test_result(
-                            result,
-                            next_output_index + 1,
-                            len(selected_cases),
-                        )
-                    next_output_index += 1
 
             def _progress_callback(event: dict[str, object]) -> None:
                 event_type = str(event["event"])
@@ -190,8 +174,6 @@ async def _async_eval(
                     advance=1,
                     description=_render_active_cases() if active_cases else "finishing...",
                 )
-                pending_results[index] = event["result"]  # type: ignore[assignment]
-                _flush_ready_results()
 
             orchestrator = EvalOrchestrator(
                 config=config,
@@ -206,6 +188,12 @@ async def _async_eval(
                 tags=tags,
                 concurrency=concurrency,
             )
+
+        for index, result in enumerate(run.results, start=1):
+            if result.score is None and result.error:
+                print_warning(result.error)
+                continue
+            print_test_result(result, index, len(run.results))
 
         should_save_baseline = save_baseline or baseline is None
         if should_save_baseline:

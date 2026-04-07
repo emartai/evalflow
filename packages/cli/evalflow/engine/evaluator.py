@@ -150,8 +150,8 @@ class EvalOrchestrator:
             asyncio.create_task(_run_one(index, test_case))
             for index, test_case in enumerate(test_cases)
         ]
-        for completed_task in asyncio.as_completed(tasks):
-            index, result = await completed_task
+        completed = await asyncio.gather(*tasks)
+        for index, result in completed:
             results[index] = result
 
         return [result for result in results if result is not None]

@@ -109,7 +109,7 @@ def main() -> int:
 
         version = _run([str(evalflow_bin), "--version"], tmpdir, env)
         assert version.returncode == 0
-        _assert_output_contains(version, "> evalflow v0.1.0")
+        _assert_output_contains(version, "> evalflow v0.1.1")
 
         help_result = _run([str(evalflow_bin), "--help"], tmpdir, env)
         assert help_result.returncode == 0

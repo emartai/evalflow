@@ -94,6 +94,29 @@ def _cmd_evalflow(*args: str) -> list[str]:
     return [str(evalflow_bin), *args]
 
 
+def _venv_python(venv_dir: Path) -> Path:
+    """Return the Python executable path inside a virtual environment."""
+
+    if os.name == "nt":
+        return venv_dir / "Scripts" / "python.exe"
+    return venv_dir / "bin" / "python"
+
+
+def _resolve_venv_evalflow_cmd(venv_dir: Path) -> list[str]:
+    """Return the best command to run evalflow inside a virtual environment."""
+
+    scripts_dir = venv_dir / ("Scripts" if os.name == "nt" else "bin")
+    candidates = [
+        scripts_dir / "evalflow.exe",
+        scripts_dir / "evalflow",
+        scripts_dir / "evalflow-script.py",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return [str(candidate)]
+    return [str(_venv_python(venv_dir)), "-m", "evalflow.main"]
+
+
 def _read_pyproject() -> dict:
     return tomllib.loads(PYPROJECT_PATH.read_text(encoding="utf-8"))
 
@@ -278,22 +301,23 @@ def _final_install_test() -> str:
             check=True,
             cwd=ROOT,
         )
-        python_bin = venv_dir / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
-        evalflow_bin = venv_dir / ("Scripts" if os.name == "nt" else "bin") / ("evalflow.exe" if os.name == "nt" else "evalflow")
+        python_bin = _venv_python(venv_dir)
+        evalflow_cmd = _resolve_venv_evalflow_cmd(venv_dir)
 
         install = _run([str(python_bin), "-m", "pip", "install", str(wheel)], cwd=tmp_path, timeout=240)
         if install.returncode != 0:
             raise RuntimeError(f"pip install failed:\n{install.stdout}\n{install.stderr}")
 
-        version = _run([str(evalflow_bin), "--version"], cwd=tmp_path)
-        if version.returncode != 0 or "> evalflow v0.1.0" not in version.stdout:
+        evalflow_cmd = _resolve_venv_evalflow_cmd(venv_dir)
+        version = _run([*evalflow_cmd, "--version"], cwd=tmp_path)
+        if version.returncode != 0 or "> evalflow v0.1.1" not in version.stdout:
             raise RuntimeError(f"Version check failed:\n{version.stdout}\n{version.stderr}")
 
-        init = _run([str(evalflow_bin), "init", "--non-interactive"], cwd=tmp_path)
+        init = _run([*evalflow_cmd, "init", "--non-interactive"], cwd=tmp_path)
         if init.returncode != 0:
             raise RuntimeError(f"Init failed:\n{init.stdout}\n{init.stderr}")
 
-        doctor = _run([str(evalflow_bin), "doctor"], cwd=tmp_path)
+        doctor = _run([*evalflow_cmd, "doctor"], cwd=tmp_path)
         if doctor.returncode != 0:
             raise RuntimeError(f"Doctor failed:\n{doctor.stdout}\n{doctor.stderr}")
 
@@ -302,7 +326,7 @@ def _final_install_test() -> str:
 
 def _cli_checks() -> str:
     version = _run(_cmd_evalflow("--version"))
-    if version.returncode != 0 or "> evalflow v0.1.0" not in version.stdout:
+    if version.returncode != 0 or "> evalflow v0.1.1" not in version.stdout:
         raise RuntimeError(f"--version failed:\n{version.stdout}\n{version.stderr}")
 
     help_result = _run(_cmd_evalflow("--help"))
@@ -367,23 +391,23 @@ def _test_and_coverage() -> str:
 
 def _git_release(tag_release: bool, push_tag: bool) -> str:
     if not tag_release:
-        return "Release tagging skipped. Re-run with --tag-release to create v0.1.0."
+        return "Release tagging skipped. Re-run with --tag-release to create v0.1.1."
 
     git_dir = ROOT / ".git"
     if not git_dir.exists():
         raise RuntimeError("No .git directory found; run release tagging from a real git clone")
 
-    tag_result = _run(["git", "tag", "v0.1.0"], cwd=ROOT)
+    tag_result = _run(["git", "tag", "v0.1.1"], cwd=ROOT)
     if tag_result.returncode != 0 and "already exists" not in tag_result.stderr:
         raise RuntimeError(f"git tag failed:\n{tag_result.stdout}\n{tag_result.stderr}")
 
     if not push_tag:
-        return "Created or verified local tag v0.1.0. Re-run with --push-tag to publish it."
+        return "Created or verified local tag v0.1.1. Re-run with --push-tag to publish it."
 
-    push_result = _run(["git", "push", "origin", "v0.1.0"], cwd=ROOT, timeout=240)
+    push_result = _run(["git", "push", "origin", "v0.1.1"], cwd=ROOT, timeout=240)
     if push_result.returncode != 0:
         raise RuntimeError(f"git push failed:\n{push_result.stdout}\n{push_result.stderr}")
-    return "Created and pushed git tag v0.1.0."
+    return "Created and pushed git tag v0.1.1."
 
 
 def main() -> int:
@@ -391,12 +415,12 @@ def main() -> int:
     parser.add_argument(
         "--tag-release",
         action="store_true",
-        help="Create the local git tag v0.1.0 after all checks pass.",
+        help="Create the local git tag v0.1.1 after all checks pass.",
     )
     parser.add_argument(
         "--push-tag",
         action="store_true",
-        help="Push the v0.1.0 tag to origin after all checks pass.",
+        help="Push the v0.1.1 tag to origin after all checks pass.",
     )
     args = parser.parse_args()
 
