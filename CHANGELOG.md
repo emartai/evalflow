@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2026-04-07
+
+### Fixed
+
+- completed Python 3.10 compatibility by replacing remaining `datetime.UTC` usage with `timezone.utc`
+- made Rich terminal output safe on legacy Windows consoles by falling back to ASCII status symbols when Unicode glyphs are not supported
+- stabilized the GitHub Actions smoke project setup so `evalflow doctor` passes consistently across Windows, macOS, and Ubuntu
+
+### Changed
+
+- expanded CI coverage to test Python 3.10, 3.11, and 3.12 on `ubuntu-latest`, `windows-latest`, and `macos-latest`
+
 ## [0.1.1] - 2026-04-07
 
 ### Changed
