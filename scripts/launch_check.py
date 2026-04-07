@@ -310,7 +310,7 @@ def _final_install_test() -> str:
 
         evalflow_cmd = _resolve_venv_evalflow_cmd(venv_dir)
         version = _run([*evalflow_cmd, "--version"], cwd=tmp_path)
-        if version.returncode != 0 or "> evalflow v0.1.4" not in version.stdout:
+        if version.returncode != 0 or "> evalflow v0.1.5" not in version.stdout:
             raise RuntimeError(f"Version check failed:\n{version.stdout}\n{version.stderr}")
 
         init = _run([*evalflow_cmd, "init", "--non-interactive"], cwd=tmp_path)
@@ -326,7 +326,7 @@ def _final_install_test() -> str:
 
 def _cli_checks() -> str:
     version = _run(_cmd_evalflow("--version"))
-    if version.returncode != 0 or "> evalflow v0.1.4" not in version.stdout:
+    if version.returncode != 0 or "> evalflow v0.1.5" not in version.stdout:
         raise RuntimeError(f"--version failed:\n{version.stdout}\n{version.stderr}")
 
     help_result = _run(_cmd_evalflow("--help"))
@@ -391,23 +391,23 @@ def _test_and_coverage() -> str:
 
 def _git_release(tag_release: bool, push_tag: bool) -> str:
     if not tag_release:
-        return "Release tagging skipped. Re-run with --tag-release to create v0.1.4."
+        return "Release tagging skipped. Re-run with --tag-release to create v0.1.5."
 
     git_dir = ROOT / ".git"
     if not git_dir.exists():
         raise RuntimeError("No .git directory found; run release tagging from a real git clone")
 
-    tag_result = _run(["git", "tag", "v0.1.4"], cwd=ROOT)
+    tag_result = _run(["git", "tag", "v0.1.5"], cwd=ROOT)
     if tag_result.returncode != 0 and "already exists" not in tag_result.stderr:
         raise RuntimeError(f"git tag failed:\n{tag_result.stdout}\n{tag_result.stderr}")
 
     if not push_tag:
-        return "Created or verified local tag v0.1.4. Re-run with --push-tag to publish it."
+        return "Created or verified local tag v0.1.5. Re-run with --push-tag to publish it."
 
-    push_result = _run(["git", "push", "origin", "v0.1.4"], cwd=ROOT, timeout=240)
+    push_result = _run(["git", "push", "origin", "v0.1.5"], cwd=ROOT, timeout=240)
     if push_result.returncode != 0:
         raise RuntimeError(f"git push failed:\n{push_result.stdout}\n{push_result.stderr}")
-    return "Created and pushed git tag v0.1.4."
+    return "Created and pushed git tag v0.1.5."
 
 
 def main() -> int:
@@ -415,12 +415,12 @@ def main() -> int:
     parser.add_argument(
         "--tag-release",
         action="store_true",
-        help="Create the local git tag v0.1.4 after all checks pass.",
+        help="Create the local git tag v0.1.5 after all checks pass.",
     )
     parser.add_argument(
         "--push-tag",
         action="store_true",
-        help="Push the v0.1.4 tag to origin after all checks pass.",
+        help="Push the v0.1.5 tag to origin after all checks pass.",
     )
     args = parser.parse_args()
 

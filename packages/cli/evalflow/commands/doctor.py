@@ -114,6 +114,8 @@ def doctor_command(
         git_ok = (cwd / ".git").exists()
         print_doctor_check("Git repository detected", git_ok)
         if not git_ok:
+            if fix:
+                console.print("  ! Cannot auto-fix: run [bold]git init[/bold] to initialize a repository")
             issue_count += 1
 
         if config is not None:
@@ -123,6 +125,8 @@ def doctor_command(
                 env_set = bool(os.environ.get(env_var)) if env_var else True
                 print_doctor_check(f"{env_var} set", env_set)
                 if not env_set and provider_name != "ollama":
+                    if fix:
+                        console.print(f'  ! Cannot auto-fix: run [bold]export {env_var}="your-key-here"[/bold]')
                     issue_count += 1
 
                 if check_providers:
@@ -144,6 +148,8 @@ def doctor_command(
             print_doctor_check("sentence-transformers installed", True)
         else:
             console.print("! sentence-transformers not installed (optional - needed for embedding_similarity)")
+            if fix:
+                console.print('  ! Cannot auto-fix: run [bold]pip install "evalflow[embeddings]"[/bold]')
 
         gitignore_ok = _gitignore_has_required_entries(gitignore_path)
         if not gitignore_ok and fix:
@@ -153,16 +159,22 @@ def doctor_command(
         if not gitignore_ok:
             issue_count += 1
 
-        print_doctor_check(".env file exists", env_path.exists())
+        env_exists = env_path.exists()
+        if not env_exists and fix:
+            env_example = cwd / ".env.example"
+            if env_example.exists():
+                env_path.write_text(env_example.read_text(encoding="utf-8"), encoding="utf-8")
+                env_exists = True
+        print_doctor_check(".env file exists", env_exists)
 
         console.print()
         if issue_count == 0:
             console.print("Everything looks good. Run: evalflow eval")
         else:
             if fix:
-                console.print(f"{issue_count} issues found.")
+                console.print(f"{issue_count} issues found. Some require manual steps (see above).")
             else:
-                console.print(f"{issue_count} issues found. Run evalflow doctor --fix to resolve.")
+                console.print(f"{issue_count} issues found. Run [bold]evalflow doctor --fix[/bold] to resolve what can be auto-fixed.")
     except typer.Exit:
         raise
     except EvalflowError as exc:

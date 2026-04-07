@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import asyncio
+import secrets
 from collections.abc import Callable
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from hashlib import sha256
 from time import perf_counter
 
@@ -74,7 +75,7 @@ class EvalOrchestrator:
         provider = provider_class()
         started_at = datetime.now(UTC)
         started_timer = perf_counter()
-        run_id = self._compute_run_id(dataset, provider_name, provider_config.model)
+        run_id = self._compute_run_id()
         dataset_hash = self._compute_dataset_hash(dataset)
 
         results = await self._run_test_cases(
@@ -256,7 +257,7 @@ class EvalOrchestrator:
                 runs=self.config.eval.consistency_runs,
             )
 
-        if EvalMethod.llm_judge in methods and test_case.eval_config.judge:
+        if test_case.eval_config.judge or EvalMethod.llm_judge in methods:
             judge_provider_name = self.config.judge.provider
             judge_provider_class = get_provider(judge_provider_name)
             judge_provider = judge_provider_class()
@@ -293,12 +294,14 @@ class EvalOrchestrator:
             regression=current_score < baseline_score,
         )
 
-    def _compute_run_id(self, dataset: Dataset, provider: str, model: str) -> str:
-        """Deterministic run ID from content hash."""
+    @staticmethod
+    def _compute_run_id() -> str:
+        """Unique run ID based on current timestamp and random entropy."""
 
-        content = f"{dataset.model_dump_json()}{provider}{model}"
-        hash_suffix = sha256(content.encode()).hexdigest()[:12]
-        return f"{date.today().strftime('%Y%m%d')}-{hash_suffix}"
+        now = datetime.now(UTC)
+        entropy = secrets.token_hex(5)
+        hash_suffix = sha256(f"{now.isoformat()}{entropy}".encode()).hexdigest()[:12]
+        return f"{now.strftime('%Y%m%d')}-{hash_suffix}"
 
     async def save_baseline(self, run: EvalRun) -> None:
         """Save the run as the latest baseline."""

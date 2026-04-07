@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import importlib.util
+import os
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -34,10 +36,14 @@ class EmbeddingEvaluator:
             self._cache_dir.mkdir(parents=True, exist_ok=True)
             if not any(self._cache_dir.iterdir()):
                 print_info("Downloading embedding model (80MB, one-time)...")
-            self._model = SentenceTransformer(
-                self.MODEL_NAME,
-                cache_folder=str(self._cache_dir),
-            )
+            os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub")
+                warnings.filterwarnings("ignore", category=UserWarning, module="sentence_transformers")
+                self._model = SentenceTransformer(
+                    self.MODEL_NAME,
+                    cache_folder=str(self._cache_dir),
+                )
         return self._model
 
     def evaluate(self, actual: str, expected: str) -> float:

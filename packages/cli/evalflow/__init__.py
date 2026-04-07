@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 
 def get_prompt(name: str, status: str = "production") -> str:

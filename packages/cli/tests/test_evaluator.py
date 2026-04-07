@@ -116,7 +116,7 @@ def make_dataset() -> Dataset:
 
 
 @pytest.mark.asyncio
-async def test_run_id_format_and_determinism(tmp_path) -> None:
+async def test_run_id_format_and_uniqueness(tmp_path) -> None:
     config = make_config()
     dataset = make_dataset()
     cache = ResponseCache(tmp_path / ".evalflow")
@@ -128,10 +128,11 @@ async def test_run_id_format_and_determinism(tmp_path) -> None:
             async with EvalflowDB(tmp_path / ".evalflow" / "runs.db") as db:
                 orchestrator = EvalOrchestrator(config, db, cache)
                 first = await orchestrator.run_eval(dataset, "openai")
-                second_id = orchestrator._compute_run_id(dataset, "openai", "gpt-4o-mini")
+                second_id = EvalOrchestrator._compute_run_id()
 
     assert re.fullmatch(r"\d{8}-[a-f0-9]{12}", first.id)
-    assert first.id == second_id
+    assert re.fullmatch(r"\d{8}-[a-f0-9]{12}", second_id)
+    assert first.id != second_id
 
 
 @pytest.mark.asyncio

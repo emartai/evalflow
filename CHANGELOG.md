@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2026-04-07
+
+### Fixed
+
+- run IDs are now unique per execution — timestamp plus random entropy prevents collisions when running the same dataset multiple times
+- LLM judge now triggers correctly when `judge: true` is set in eval config, regardless of the `methods` list
+- `evalflow doctor --fix` now creates `.env` from `.env.example` and shows actionable manual steps for issues it cannot auto-fix
+- suppressed noisy HuggingFace Hub symlink and authentication warnings on Windows during embedding model load
+
 ## [0.1.4] - 2026-04-07
 
 ### Changed
