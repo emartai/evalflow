@@ -37,7 +37,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/emartai/evalflow"
-Documentation = "https://emartai.github.io/evalflow/"
+Documentation = "https://emartai.mintlify.app/"
 Repository = "https://github.com/emartai/evalflow"
 Issues = "https://github.com/emartai/evalflow/issues"
 Changelog = "https://github.com/emartai/evalflow/blob/main/CHANGELOG.md"

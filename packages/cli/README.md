@@ -118,7 +118,7 @@ evalflow prompt list
 
 ## Documentation
 
-- Docs hub: [emartai.github.io/evalflow](https://emartai.github.io/evalflow/)
+- Docs hub: [emartai.mintlify.app](https://emartai.mintlify.app/)
 - Quickstart source: [docs/quickstart.mdx](https://github.com/emartai/evalflow/blob/main/docs/quickstart.mdx)
 - CLI reference source: [docs/cli-reference.mdx](https://github.com/emartai/evalflow/blob/main/docs/cli-reference.mdx)
 - CI guide source: [docs/ci-github-actions.mdx](https://github.com/emartai/evalflow/blob/main/docs/ci-github-actions.mdx)
