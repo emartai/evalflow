@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
+UTC = timezone.utc
 
 if str(PACKAGE_ROOT) not in sys.path:
     sys.path.insert(0, str(PACKAGE_ROOT))

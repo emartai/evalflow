@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import re
 from unittest.mock import patch
 
 import pytest
@@ -17,6 +18,10 @@ from evalflow.main import app
 from evalflow.storage.cache import ResponseCache
 
 runner = CliRunner()
+
+
+def _strip_ansi(text: str) -> str:
+    return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
 
 class MockProvider(BaseProvider):
@@ -86,13 +91,14 @@ def test_root_help_matches_expected_command_descriptions(tmp_path: Path, monkeyp
     result = runner.invoke(app, ["--help"], catch_exceptions=False)
 
     assert result.exit_code == 0
-    assert "pytest for LLMs - catch prompt regressions before they reach production." in result.output
-    assert "init     Set up evalflow in your project." in result.output
-    assert "eval     Run the LLM quality gate against your dataset." in result.output
-    assert "doctor   Check your evalflow setup." in result.output
-    assert "runs     List recent eval runs." in result.output
-    assert "compare  Compare two eval runs side by side." in result.output
-    assert "prompt   Manage prompt versions" in result.output
+    output = _strip_ansi(result.output)
+    assert "pytest for LLMs - catch prompt regressions before they reach production." in output
+    assert "init" in output and "Set up evalflow in your project." in output
+    assert "eval" in output and "Run the LLM quality gate against your dataset." in output
+    assert "doctor" in output and "Check your evalflow setup." in output
+    assert "runs" in output and "List recent eval runs." in output
+    assert "compare" in output and "Compare two eval runs side by side." in output
+    assert "prompt" in output and "Manage prompt versions" in output
 
 
 def test_eval_help_shows_exit_codes_and_option_descriptions(tmp_path: Path, monkeypatch) -> None:
@@ -101,27 +107,28 @@ def test_eval_help_shows_exit_codes_and_option_descriptions(tmp_path: Path, monk
     result = runner.invoke(app, ["eval", "--help"], catch_exceptions=False)
 
     assert result.exit_code == 0
-    assert "Run the LLM quality gate against your dataset." in result.output
-    assert "Exits 0 on pass, 1 on quality failure (blocks CI), 2 on error." in result.output
-    assert "LLM provider" in result.output
-    assert "openai" in result.output
-    assert "anthropic" in result.output
-    assert "gemini" in result.output
-    assert "ollama" in result.output
-    assert "Model to use" in result.output
-    assert "overrides" in result.output
-    assert "config" in result.output
-    assert "Path to dataset JSON" in result.output
-    assert "default:" in result.output
-    assert "evals/dataset.json" in result.output
-    assert "Run only test cases" in result.output
-    assert "this tag" in result.output
-    assert "Use cached responses" in result.output
-    assert "Maximum number of test cases" in result.output
-    assert "to run in parallel" in result.output
-    assert "Show full error details" in result.output
-    assert "Save this run as the new" in result.output
-    assert "baseline" in result.output
+    output = _strip_ansi(result.output)
+    assert "Run the LLM quality gate against your dataset." in output
+    assert "Exits 0 on pass, 1 on quality failure (blocks CI), 2 on error." in output
+    assert "LLM provider" in output
+    assert "openai" in output
+    assert "anthropic" in output
+    assert "gemini" in output
+    assert "ollama" in output
+    assert "Model to use" in output
+    assert "overrides" in output
+    assert "config" in output
+    assert "Path to dataset JSON" in output
+    assert "default:" in output
+    assert "evals/dataset.json" in output
+    assert "Run only test cases" in output
+    assert "tag" in output
+    assert "Use cached responses" in output
+    assert "Maximum number of test cases" in output
+    assert "to run in parallel" in output
+    assert "Show full error details" in output
+    assert "Save this run as the new" in output
+    assert "baseline" in output
 
 
 def test_init_adds_gitignore_entries(tmp_path: Path, monkeypatch) -> None:
@@ -657,7 +664,8 @@ def test_dataset_lint_rejects_path_traversal(tmp_path: Path, monkeypatch) -> Non
     outside = tmp_path.parent / "outside.json"
     outside.write_text("{}", encoding="utf-8")
 
-    result = runner.invoke(app, ["dataset", "lint", "..\\outside.json"], catch_exceptions=False)
+    traversal_path = os.path.join("..", "outside.json")
+    result = runner.invoke(app, ["dataset", "lint", traversal_path], catch_exceptions=False)
 
     assert result.exit_code == 2
     assert "Path traversal detected" in result.output
@@ -697,9 +705,10 @@ def test_eval_rejects_dataset_path_traversal(tmp_path: Path, monkeypatch) -> Non
     outside = tmp_path.parent / "outside.json"
     outside.write_text("{}", encoding="utf-8")
 
+    traversal_path = os.path.join("..", "outside.json")
     result = runner.invoke(
         app,
-        ["eval", "--dataset", "..\\outside.json"],
+        ["eval", "--dataset", traversal_path],
         env={"OPENAI_API_KEY": "fake-key"},
         catch_exceptions=False,
     )

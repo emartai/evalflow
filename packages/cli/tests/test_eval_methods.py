@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from types import SimpleNamespace
 from unittest.mock import patch
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -103,7 +104,7 @@ class TestEmbeddingSimilarity:
 
         assert isinstance(evaluator._model, _FakeSentenceTransformer)
         assert evaluator._model.model_name == EmbeddingEvaluator.MODEL_NAME
-        assert evaluator._model.kwargs["cache_folder"].endswith(".evalflow\\models")
+        assert Path(evaluator._model.kwargs["cache_folder"]).as_posix().endswith(".evalflow/models")
 
     def test_import_error_raises_helpful_message(self) -> None:
         evaluator = EmbeddingEvaluator()
