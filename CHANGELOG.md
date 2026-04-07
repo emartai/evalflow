@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.7] - 2026-04-07
+
+### Fixed
+
+- starter dataset now uses `exact_match` on a simple factual prompt — new users no longer get an immediate error on first `evalflow eval` because `sentence-transformers` is not installed by default
+- `EvalflowError` (e.g. missing optional dependency) now propagates correctly from eval methods instead of being silently swallowed and reported as a generic 0.00 score with no explanation
+- test assertions for version string and dataset ID are now release-agnostic so they don't break on every version bump
+
 ## [0.1.6] - 2026-04-07
 
 ### Fixed

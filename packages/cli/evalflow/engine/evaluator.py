@@ -12,7 +12,7 @@ from time import perf_counter
 from evalflow.engine.base import BaseProvider, ProviderConfig
 import evalflow.engine.methods as methods_module
 from evalflow.engine.providers import get_provider, resolve_provider_config
-from evalflow.exceptions import DatasetError, ProviderError, StorageError
+from evalflow.exceptions import DatasetError, EvalflowError, ProviderError, StorageError
 from evalflow.models import (
     BaselineComparison,
     Dataset,
@@ -220,7 +220,7 @@ class EvalOrchestrator:
                 judge_score=scores.get("judge"),
                 raw_output=actual_output if self.config.storage.store_raw_outputs else None,
             )
-        except (ProviderError, StorageError):
+        except (ProviderError, StorageError, EvalflowError):
             raise
         except Exception as exc:
             return self._build_result(

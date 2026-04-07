@@ -216,15 +216,15 @@ def _write_default_dataset(path: Path) -> None:
         "version": "1.0",
         "test_cases": [
             {
-                "id": "example-summarization",
-                "description": "Basic summarization test",
-                "task_type": "summarization",
-                "input": "Summarize in one sentence: The quick brown fox jumps over the lazy dog.",
-                "expected_output": "A fox jumps over a dog.",
+                "id": "example-greeting",
+                "description": "Simple greeting test — replace with your own cases",
+                "task_type": "qa",
+                "input": "Reply with exactly the word: hello",
+                "expected_output": "hello",
                 "context": "",
                 "tags": ["example"],
                 "eval_config": {
-                    "methods": ["embedding_similarity"],
+                    "methods": ["exact_match"],
                     "judge": False,
                     "weight": 1.0,
                 },

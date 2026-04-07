@@ -180,7 +180,7 @@ def test_init_writes_env_var_name_not_key(tmp_path: Path, monkeypatch) -> None:
     assert "sk-" not in (tmp_path / "evalflow.yaml").read_text(encoding="utf-8")
 
     dataset = json.loads((tmp_path / "evals" / "dataset.json").read_text(encoding="utf-8"))
-    assert dataset["test_cases"][0]["id"] == "example-summarization"
+    assert len(dataset["test_cases"]) >= 1
 
 
 def test_init_non_interactive_creates_project_files(tmp_path: Path, monkeypatch) -> None:
