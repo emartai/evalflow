@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 
 from rich.console import Console
 
 from evalflow.models import EvalRun, PromptVersion, TestCaseResult as RunTestCaseResult
 from evalflow.output import rich_output
+
+
+UTC = timezone.utc
 
 
 def _capture_output(func) -> str:

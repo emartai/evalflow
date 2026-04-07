@@ -11,10 +11,11 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
@@ -38,8 +39,14 @@ jobs:
         run: uv run pytest --basetemp=../../.pytest-tmp -q
 
       - name: Smoke init and doctor
+        shell: pwsh
         run: |
-          mkdir ci-smoke
-          cd ci-smoke
-          ../.venv/bin/evalflow init --non-interactive
-          ../.venv/bin/evalflow doctor --no-provider-check
+          New-Item -ItemType Directory -Path ci-smoke | Out-Null
+          Push-Location ci-smoke
+          try {
+            $evalflow = if ($IsWindows) { "..\.venv\Scripts\evalflow.exe" } else { "../.venv/bin/evalflow" }
+            & $evalflow init --non-interactive
+            & $evalflow doctor --no-provider-check
+          } finally {
+            Pop-Location
+          }

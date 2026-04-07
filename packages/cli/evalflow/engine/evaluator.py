@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from hashlib import sha256
 from time import perf_counter
 
@@ -24,6 +24,9 @@ from evalflow.models import (
 )
 from evalflow.storage.cache import ResponseCache
 from evalflow.storage.db import EvalflowDB
+
+
+UTC = timezone.utc
 
 
 class EvalOrchestrator:

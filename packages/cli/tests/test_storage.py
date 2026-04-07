@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 import os
 
@@ -12,6 +12,9 @@ from evalflow.models import EvalRun, RunStatus
 from evalflow.models import TestCaseResult as RunTestCaseResult
 from evalflow.storage.cache import ResponseCache
 from evalflow.storage.db import EvalflowDB
+
+
+UTC = timezone.utc
 
 
 def make_result(
