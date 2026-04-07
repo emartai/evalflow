@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-04-07
+
+### Fixed
+
+- updated PyPI package description to show the full README instead of a one-line stub
+
 ## [0.1.2] - 2026-04-07
 
 ### Fixed
