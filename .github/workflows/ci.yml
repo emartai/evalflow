@@ -46,6 +46,9 @@ jobs:
           try {
             $evalflow = if ($IsWindows) { "..\.venv\Scripts\evalflow.exe" } else { "../.venv/bin/evalflow" }
             & $evalflow init --non-interactive
+            git init | Out-Null
+            Set-Content -Path .env -Value "# ci smoke env"
+            $env:OPENAI_API_KEY = "ci-smoke-key"
             & $evalflow doctor --no-provider-check
           } finally {
             Pop-Location

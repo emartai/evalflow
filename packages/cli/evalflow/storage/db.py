@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 import aiosqlite
 
 from evalflow.models import EvalRun, TestCaseResult
+
+
+UTC = timezone.utc
 
 
 class EvalflowDB:

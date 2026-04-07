@@ -46,7 +46,11 @@ def make_run(status: str = "pass") -> EvalRun:
             "overall_score": 0.91 if status == "pass" else 0.61,
             "duration_ms": 4200.0,
             "results": [
-                {"test_case_id": "critical-match", "status": status, "score": 0.91 if status == "pass" else 0.61}
+                {
+                    "test_case_id": "critical-match",
+                    "status": status,
+                    "score": 0.91 if status == "pass" else 0.61,
+                }
             ],
         }
     )
@@ -71,7 +75,7 @@ def test_print_eval_summary_with_baseline_delta() -> None:
     baseline = {"scores": {"overall_score": 0.80}}
     output = _capture_output(lambda: rich_output.print_eval_summary(run, baseline))
     assert "Quality Gate: PASS" in output
-    assert "Δ overall: +0.11" in output
+    assert "Δ overall: +0.11" in output or "Delta overall: +0.11" in output
     assert "Duration: 4.2s" in output
 
 
@@ -130,7 +134,9 @@ def test_print_prompt_list_and_diff() -> None:
         }
     )
 
-    list_output = _capture_output(lambda: rich_output.print_prompt_list([prompt_v1, prompt_v2]))
+    list_output = _capture_output(
+        lambda: rich_output.print_prompt_list([prompt_v1, prompt_v2])
+    )
     diff_output = _capture_output(lambda: rich_output.print_prompt_diff(prompt_v1, prompt_v2))
 
     assert "summarization" in list_output

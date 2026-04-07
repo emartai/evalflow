@@ -29,15 +29,35 @@ console = Console()
 _result_column_width = 0
 
 
+def _supports_unicode_output() -> bool:
+    """Return whether the active console encoding can print our symbols."""
+
+    encoding = getattr(getattr(console, "file", None), "encoding", None) or "utf-8"
+    try:
+        "\u2713\u2717\u0394".encode(encoding)
+    except (LookupError, UnicodeEncodeError):
+        return False
+    return True
+
+
+def _status_symbol(success: bool) -> str:
+    if _supports_unicode_output():
+        return "\u2713" if success else "\u2717"
+    return "+" if success else "x"
+
+
+def _delta_label() -> str:
+    return "\u0394 overall" if _supports_unicode_output() else "Delta overall"
+
+
 def print_eval_header(provider: str, model: str, test_count: int) -> None:
     """Print the eval execution header."""
 
+    del provider
     global _result_column_width
     _result_column_width = 0
     console.print()
-    console.print(
-        f"Running {test_count} test cases against {escape(model)}...",
-    )
+    console.print(f"Running {test_count} test cases against {escape(model)}...")
     console.print()
 
 
@@ -48,7 +68,7 @@ def print_test_result(result: TestCaseResult, index: int, total: int) -> None:
     global _result_column_width
     _result_column_width = max(_result_column_width, len(result.test_case_id))
 
-    symbol = "✓" if result.status is RunStatus.pass_ else "✗"
+    symbol = _status_symbol(result.status is RunStatus.pass_)
     symbol_color = SUCCESS_COLOR if result.status is RunStatus.pass_ else ERROR_COLOR
     score = f"{(result.score or 0.0):.2f}"
     gap = " " * 4
@@ -62,9 +82,7 @@ def print_test_result(result: TestCaseResult, index: int, total: int) -> None:
     console.print(line)
 
 
-def print_eval_summary(
-    run: EvalRun, baseline: dict | None = None
-) -> None:
+def print_eval_summary(run: EvalRun, baseline: dict | None = None) -> None:
     """Print the end-of-run summary block."""
 
     failures = sum(1 for result in run.results if result.status is not RunStatus.pass_)
@@ -85,7 +103,7 @@ def print_eval_summary(
         outcome = "improved" if delta > 0 else "regressed" if delta < 0 else "unchanged"
         console.print(
             Text.assemble(
-                ("Δ overall: ", "default"),
+                (f"{_delta_label()}: ", "default"),
                 (delta_text, delta_color),
                 (f" ({outcome})", "default"),
             )
@@ -99,7 +117,9 @@ def print_eval_summary(
 def print_error(title: str, fix: str, link: str | None = None) -> None:
     """Print a formatted error message."""
 
-    console.print(Text.assemble(("✗ ", ERROR_COLOR), (title, ERROR_COLOR)))
+    console.print(
+        Text.assemble((f"{_status_symbol(False)} ", ERROR_COLOR), (title, ERROR_COLOR))
+    )
     console.print()
     for line in fix.splitlines():
         console.print(Text(f"  {line}"))
@@ -124,7 +144,7 @@ def print_warning(message: str) -> None:
 def print_doctor_check(label: str, status: bool, detail: str | None = None) -> None:
     """Print one doctor checklist line."""
 
-    symbol = "✓" if status else "✗"
+    symbol = _status_symbol(status)
     color = SUCCESS_COLOR if status else ERROR_COLOR
     text = f"{label}"
     if detail:
@@ -169,7 +189,7 @@ def print_compare_diff(
     table.add_column("Test Case")
     table.add_column(str(run_a.get("id", "Run A")), no_wrap=True)
     table.add_column(str(run_b.get("id", "Run B")), no_wrap=True)
-    table.add_column("Δ", justify="right")
+    table.add_column("Δ" if _supports_unicode_output() else "Delta", justify="right")
     table.add_column("Status Change")
 
     by_id_a = {result["test_case_id"]: result for result in results_a}
