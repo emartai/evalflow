@@ -1,0 +1,26 @@
+version: "1.0"
+project: anthropic-basic
+
+providers:
+  anthropic:
+    api_key_env: "ANTHROPIC_API_KEY"
+    default_model: "claude-3-5-haiku-20241022"
+
+eval:
+  dataset: "evals/dataset.json"
+  baseline_file: ".evalflow/baseline.json"
+  default_provider: "anthropic"
+  consistency_runs: 3
+
+thresholds:
+  task_success: 0.80
+  relevance: 0.75
+  hallucination_max: 0.10
+  consistency_min: 0.85
+
+judge:
+  provider: "anthropic"
+  model: "claude-3-5-haiku-20241022"
+
+prompts:
+  directory: "prompts/"
